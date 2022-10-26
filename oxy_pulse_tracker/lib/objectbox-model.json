@@ -1,0 +1,124 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:3261017807365784585",
+      "lastPropertyId": "6:933392401817895968",
+      "name": "Member",
+      "properties": [
+        {
+          "id": "1:7990927664945178656",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3147022008888722829",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:3678443765602611091",
+          "name": "relation",
+          "type": 9
+        },
+        {
+          "id": "4:774119224328811979",
+          "name": "age",
+          "type": 6
+        },
+        {
+          "id": "5:1647567722381661209",
+          "name": "avatar",
+          "type": 9
+        },
+        {
+          "id": "6:933392401817895968",
+          "name": "isAvatarImage",
+          "type": 1
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:6653372005734956530",
+          "name": "logs",
+          "targetId": "2:5558302857323636184"
+        }
+      ]
+    },
+    {
+      "id": "2:5558302857323636184",
+      "lastPropertyId": "6:3678051895625802954",
+      "name": "MemberLog",
+      "properties": [
+        {
+          "id": "1:6822132804115479604",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4570204105048120033",
+          "name": "timestamp",
+          "type": 10
+        },
+        {
+          "id": "3:2960908712970201720",
+          "name": "oxygenSaturation",
+          "type": 8
+        },
+        {
+          "id": "4:3138617634698034990",
+          "name": "pulse",
+          "type": 8
+        },
+        {
+          "id": "5:5278249302156037973",
+          "name": "temp",
+          "type": 8
+        },
+        {
+          "id": "6:3678051895625802954",
+          "name": "memberId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:8385766347508653733",
+          "relationTarget": "Member"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:4257045197649956851",
+      "lastPropertyId": "2:4060314223261997726",
+      "name": "Settings",
+      "properties": [
+        {
+          "id": "1:1779377877053546178",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4060314223261997726",
+          "name": "customRelations",
+          "type": 30
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:4257045197649956851",
+  "lastIndexId": "1:8385766347508653733",
+  "lastRelationId": "1:6653372005734956530",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
