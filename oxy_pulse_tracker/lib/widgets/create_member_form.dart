@@ -107,6 +107,9 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                 onChanged: (val) {
                   setState(() {
                     _isOtherRelation = val == "Other";
+                    if (!_isOtherRelation) {
+                      customRelation = "";
+                    }
                     if (val != null) {
                       member.relation = val;
                     }
@@ -127,6 +130,13 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                         if (newValue != null && newValue.trim().isNotEmpty) {
                           customRelation = newValue;
                         }
+                      },
+                      validator: (value) {
+                        if (_isOtherRelation &&
+                            (value == null || value.isEmpty)) {
+                          return "Please enter relation";
+                        }
+                        return null;
                       },
                     )
                   : const SizedBox(),
@@ -163,7 +173,8 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
 
   _saveForm() {
     _form.currentState?.save();
-    if (_form.currentState?.validate() == true) {
+    final isValid = _form.currentState?.validate() ?? false;
+    if (isValid) {
       widget.onSubmit(
         member.name,
         member.age!,
