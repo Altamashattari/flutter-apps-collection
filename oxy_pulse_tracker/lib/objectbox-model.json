@@ -40,13 +40,7 @@
           "type": 1
         }
       ],
-      "relations": [
-        {
-          "id": "1:6653372005734956530",
-          "name": "logs",
-          "targetId": "2:5558302857323636184"
-        }
-      ]
+      "relations": []
     },
     {
       "id": "2:5558302857323636184",
@@ -112,13 +106,16 @@
   ],
   "lastEntityId": "3:4257045197649956851",
   "lastIndexId": "1:8385766347508653733",
-  "lastRelationId": "1:6653372005734956530",
+  "lastRelationId": "2:4434819198166717374",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    6653372005734956530,
+    4434819198166717374
+  ],
   "version": 1
 }

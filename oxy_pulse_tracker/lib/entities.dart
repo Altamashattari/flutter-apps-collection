@@ -38,6 +38,7 @@ class Member {
   String avatar;
   bool isAvatarImage;
 
+  @Backlink()
   final logs = ToMany<MemberLog>();
 
   Member({

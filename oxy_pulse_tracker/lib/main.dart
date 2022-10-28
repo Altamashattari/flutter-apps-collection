@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       routes: {
-        AppRoutes.membersPage: (context) => const Members(),
+        AppRoutes.membersPage: (context) => const MembersPage(),
         AppRoutes.memberLogPage: (context) => const MemberLogPage(),
         AppRoutes.settings: (context) => const Settings(),
       },

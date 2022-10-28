@@ -15,12 +15,6 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("App Settings"),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
-            icon: const Icon(Icons.settings),
-          ),
-        ],
       ),
       body: const Center(
         child: Text("Setting Page"),
