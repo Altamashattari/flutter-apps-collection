@@ -4,38 +4,38 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:3261017807365784585",
-      "lastPropertyId": "6:933392401817895968",
+      "id": "1:2165792471109147274",
+      "lastPropertyId": "6:5585542973571322685",
       "name": "Member",
       "properties": [
         {
-          "id": "1:7990927664945178656",
+          "id": "1:5419604837087194241",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:3147022008888722829",
+          "id": "2:5427465667865740258",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:3678443765602611091",
+          "id": "3:3991520044326592869",
           "name": "relation",
           "type": 9
         },
         {
-          "id": "4:774119224328811979",
+          "id": "4:2688980139868036642",
           "name": "age",
           "type": 6
         },
         {
-          "id": "5:1647567722381661209",
+          "id": "5:167757727566926654",
           "name": "avatar",
           "type": 9
         },
         {
-          "id": "6:933392401817895968",
+          "id": "6:5585542973571322685",
           "name": "isAvatarImage",
           "type": 1
         }
@@ -43,60 +43,60 @@
       "relations": []
     },
     {
-      "id": "2:5558302857323636184",
-      "lastPropertyId": "6:3678051895625802954",
+      "id": "2:1059131443099492783",
+      "lastPropertyId": "6:2539754647068309887",
       "name": "MemberLog",
       "properties": [
         {
-          "id": "1:6822132804115479604",
+          "id": "1:1795751028869723281",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:4570204105048120033",
+          "id": "2:7676410201398117187",
           "name": "timestamp",
           "type": 10
         },
         {
-          "id": "3:2960908712970201720",
+          "id": "3:266101208667250673",
           "name": "oxygenSaturation",
           "type": 8
         },
         {
-          "id": "4:3138617634698034990",
+          "id": "4:7584315089511414460",
           "name": "pulse",
           "type": 8
         },
         {
-          "id": "5:5278249302156037973",
+          "id": "5:7238631969081243452",
           "name": "temp",
           "type": 8
         },
         {
-          "id": "6:3678051895625802954",
+          "id": "6:2539754647068309887",
           "name": "memberId",
           "type": 11,
           "flags": 520,
-          "indexId": "1:8385766347508653733",
+          "indexId": "1:1764337311939265016",
           "relationTarget": "Member"
         }
       ],
       "relations": []
     },
     {
-      "id": "3:4257045197649956851",
-      "lastPropertyId": "2:4060314223261997726",
+      "id": "3:4302663212732829301",
+      "lastPropertyId": "2:5826969803223687930",
       "name": "Settings",
       "properties": [
         {
-          "id": "1:1779377877053546178",
+          "id": "1:5804714368476426606",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:4060314223261997726",
+          "id": "2:5826969803223687930",
           "name": "customRelations",
           "type": 30
         }
@@ -104,18 +104,15 @@
       "relations": []
     }
   ],
-  "lastEntityId": "3:4257045197649956851",
-  "lastIndexId": "1:8385766347508653733",
-  "lastRelationId": "2:4434819198166717374",
+  "lastEntityId": "3:4302663212732829301",
+  "lastIndexId": "1:1764337311939265016",
+  "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [],
-  "retiredRelationUids": [
-    6653372005734956530,
-    4434819198166717374
-  ],
+  "retiredRelationUids": [],
   "version": 1
 }
