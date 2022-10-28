@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -41,9 +37,6 @@ class _MembersPageState extends State<MembersPage> {
             .map((query) => query.find());
         isStoreInitialized = true;
       });
-      // openStore().then((store) {
-      //   _store = store;
-      // });
     }).catchError((err) {
       print(err);
     });
@@ -87,6 +80,7 @@ class _MembersPageState extends State<MembersPage> {
                   members: snapshot.data!,
                   onMemberDelete: _removeMember,
                   onMemberEdit: _onEditMember,
+                  store: _store,
                 );
               },
             )

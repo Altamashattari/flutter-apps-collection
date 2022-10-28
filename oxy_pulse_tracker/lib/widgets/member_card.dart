@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:oxy_pulse_tracker/routes.dart';
 
 import '../entities.dart';
+import '../objectbox.g.dart';
 
 class MemberCard extends StatelessWidget {
   final Member member;
   final Function(int memberId) onMemberEdit;
   final Function(int memberId) onMemberDelete;
+  final Store store;
 
   const MemberCard({
     super.key,
     required this.member,
     required this.onMemberEdit,
     required this.onMemberDelete,
+    required this.store,
   });
 
   @override
@@ -64,7 +67,7 @@ class MemberCard extends StatelessWidget {
       onTap: () => Navigator.pushNamed(
         context,
         AppRoutes.memberLogPage,
-        arguments: {'id': member.id},
+        arguments: {'member': member, 'store': store},
       ),
     );
   }
