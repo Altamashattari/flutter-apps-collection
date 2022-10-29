@@ -1,9 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
-enum TemperatureUnit {
-  fahrenheit,
-  celsius,
-}
+import 'assets/constants.dart';
 
 @Entity()
 class MemberLog {
@@ -48,19 +45,5 @@ class Member {
     this.age,
     required this.avatar,
     required this.isAvatarImage,
-  });
-}
-
-@Entity()
-class Settings {
-  @Id()
-  int id;
-  TemperatureUnit? preferredTemperatureUnit;
-  List<String>? customRelations;
-
-  Settings({
-    this.id = 0,
-    this.preferredTemperatureUnit,
-    this.customRelations,
   });
 }

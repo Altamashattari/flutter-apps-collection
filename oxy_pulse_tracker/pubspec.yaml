@@ -42,6 +42,10 @@ dependencies:
   objectbox: ^1.6.2
   objectbox_flutter_libs: any
   flutter_riverpod: ^2.0.2
+  intl: ^0.17.0
+  settings_ui: ^2.0.2
+  shared_preferences: ^2.0.15
+  flutter_hooks: ^0.18.5+1
 
 dev_dependencies:
   flutter_test:
