@@ -15,15 +15,22 @@ class MemberLogPage extends StatefulWidget {
 
 class _MemberLogPageState extends State<MemberLogPage> {
   bool editMode = false;
+  bool _sortAscending = true;
+  int _sortColumnIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map;
     Member member = arg['member'];
     Store store = arg['store'];
-    var stream = store
-        .box<MemberLog>()
-        .query(MemberLog_.member.equals(member.id))
+    final sortField = _getColumnToBeSorted(_sortColumnIndex);
+    final queryBuilder =
+        store.box<MemberLog>().query(MemberLog_.member.equals(member.id));
+    queryBuilder.order(
+      sortField,
+      flags: _sortAscending ? 0 : Order.descending,
+    );
+    var stream = queryBuilder
         .watch(triggerImmediately: true)
         .map((query) => query.find());
     return Scaffold(
@@ -89,11 +96,32 @@ class _MemberLogPageState extends State<MemberLogPage> {
                     ),
                     deleteRow: (id) => store.box<MemberLog>().remove(id),
                     isEditMode: editMode,
+                    onSort: (columnIndex, ascending) {
+                      setState(() {
+                        _sortColumnIndex = columnIndex;
+                        _sortAscending = ascending;
+                      });
+                    },
                   ),
                 ),
               ),
             );
           },
         ));
+  }
+
+  dynamic _getColumnToBeSorted(int columnIndex) {
+    switch (columnIndex) {
+      case 0:
+        return MemberLog_.timestamp;
+      case 2:
+        return MemberLog_.oxygenSaturation;
+      case 3:
+        return MemberLog_.pulse;
+      case 4:
+        return MemberLog_.temp;
+      default:
+        return null;
+    }
   }
 }

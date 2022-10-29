@@ -10,12 +10,14 @@ class MemberLogDataTable extends StatefulWidget {
   final UserSetting userSetting;
   final Function(int id) deleteRow;
   final bool isEditMode;
+  final void Function(int columnIndex, bool ascending) onSort;
   const MemberLogDataTable({
     super.key,
     required this.logs,
     required this.userSetting,
     required this.deleteRow,
     required this.isEditMode,
+    required this.onSort,
   });
 
   @override
@@ -23,35 +25,54 @@ class MemberLogDataTable extends StatefulWidget {
 }
 
 class _MemberLogDataTableState extends State<MemberLogDataTable> {
+  bool _sortAscending = true;
+  int _sortColumnIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columns: _createColumns(),
-      rows: _createRows(),
-    );
+    return widget.logs.isNotEmpty
+        ? DataTable(
+            columns: _createColumns(),
+            rows: _createRows(),
+            sortAscending: _sortAscending,
+            sortColumnIndex: _sortColumnIndex,
+          )
+        : const Center(
+            heightFactor: 30,
+            child: Text(
+              "No Data found for the member",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.grey,
+              ),
+            ),
+          );
   }
 
   List<DataColumn> _createColumns() {
     String temperatureUnit =
         widget.userSetting.tempUnit == TemperatureUnit.fahrenheit ? "°F" : "°C";
     var defaultColumns = [
-      const DataColumn(
-        label: Text('Date'),
+      DataColumn(
+        label: const Text('Date'),
+        onSort: _onDataColumnSort, // 0
       ),
       const DataColumn(
         label: Text('Time'),
       ),
-      const DataColumn(
-        label: Text('SPO₂'),
+      DataColumn(
+        label: const Text('SPO₂'),
         numeric: true,
+        onSort: _onDataColumnSort, // 2
       ),
-      const DataColumn(
-        label: Text('Pulse'),
+      DataColumn(
+        label: const Text('Pulse'),
         numeric: true,
+        onSort: _onDataColumnSort, // 3
       ),
       DataColumn(
         label: Text('Temp($temperatureUnit)'),
         numeric: true,
+        onSort: _onDataColumnSort, // 4
       ),
     ];
     if (widget.isEditMode) {
@@ -99,5 +120,13 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
 
   String _getDisplayTime(DateTime date) {
     return DateFormat("h:mm a").format(date);
+  }
+
+  void _onDataColumnSort(int columnIndex, bool ascending) {
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _sortAscending = ascending;
+    });
+    widget.onSort(columnIndex, ascending);
   }
 }
