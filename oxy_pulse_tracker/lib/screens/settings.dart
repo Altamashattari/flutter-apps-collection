@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:oxy_pulse_tracker/models/user_settings_model.dart';
+import 'package:provider/provider.dart';
 
 import 'package:settings_ui/settings_ui.dart';
 import '../assets/constants.dart';
 import '../utils/user_settings.dart';
-
-const key = "user_settings";
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -17,53 +14,20 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  // ignore: prefer_final_fields
-  UserSetting _setting = UserSetting(
-    dateFormat: "MM/dd/yyyy",
-    tempUnit: TemperatureUnit.fahrenheit,
-  );
-  late SharedPreferences _pref;
-  bool hasError = false;
-  bool loading = false;
+  late UserSettingModel _userSettingModel;
 
-  _getSharedPreferenceInstance() async {
-    try {
-      loading = true;
-      final value = await SharedPreferences.getInstance();
-      String? userSettings = value.getString(key);
-      setState(() {
-        _pref = value;
-        if (userSettings != null) {
-          var decodedValue = jsonDecode(userSettings);
-          _setting = UserSetting(
-            dateFormat: decodedValue["dateFormat"],
-            tempUnit: TemperatureUnit.values.byName(decodedValue["tempUnit"]),
-          );
-        }
-      });
-    } catch (e) {
-      setState(() {
-        hasError = true;
-      });
-    } finally {
-      setState(() {
-        loading = false;
-      });
-    }
-  }
-
-  _setUserSetting() {
-    _pref.setString(key, jsonEncode(_setting.toJson()));
+  _setUserSetting(UserSetting userSettings) {
+    _userSettingModel.updateUserSettings(userSettings);
   }
 
   @override
   void initState() {
-    _getSharedPreferenceInstance();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _userSettingModel = Provider.of<UserSettingModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("App Settings"),
@@ -73,23 +37,9 @@ class _SettingsState extends State<Settings> {
   }
 
   Widget _getBodyWidget() {
-    if (loading) {
-      return const Center(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    if (hasError) {
-      return const Center(
-        child: Text(
-          "Unexpected error occurred",
-        ),
-      );
-    }
     String temperatureText = temperatureUnitDropdownItems
-        .firstWhere((element) => element.value == _setting.tempUnit)
+        .firstWhere((element) =>
+            element.value == _userSettingModel.userSettings.tempUnit)
         .text;
     return SettingsList(
       sections: [
@@ -99,7 +49,7 @@ class _SettingsState extends State<Settings> {
             SettingsTile.navigation(
               leading: const Icon(Icons.date_range_outlined),
               title: const Text('Date Format'),
-              value: Text(_setting.dateFormat),
+              value: Text(_userSettingModel.userSettings.dateFormat),
               onPressed: (context) {
                 showDialog(
                     context: context,
@@ -120,14 +70,21 @@ class _SettingsState extends State<Settings> {
                                   (format) => RadioListTile(
                                     title: Text(format['value']!),
                                     value: format['value']!,
-                                    groupValue: _setting.dateFormat,
-                                    selected:
-                                        _setting.dateFormat == format['value'],
+                                    groupValue: _userSettingModel
+                                        .userSettings.dateFormat,
+                                    selected: _userSettingModel
+                                            .userSettings.dateFormat ==
+                                        format['value'],
                                     onChanged: (value) {
                                       setState(() {
                                         if (value != null) {
-                                          _setting.dateFormat = value;
-                                          _setUserSetting();
+                                          _setUserSetting(
+                                            UserSetting(
+                                              dateFormat: value,
+                                              tempUnit: _userSettingModel
+                                                  .userSettings.tempUnit,
+                                            ),
+                                          );
                                         }
                                       });
 
@@ -166,13 +123,21 @@ class _SettingsState extends State<Settings> {
                                   (unit) => RadioListTile(
                                     title: Text(unit.text),
                                     value: unit.value,
-                                    groupValue: _setting.tempUnit,
-                                    selected: _setting.tempUnit == unit.value,
+                                    groupValue:
+                                        _userSettingModel.userSettings.tempUnit,
+                                    selected: _userSettingModel
+                                            .userSettings.tempUnit ==
+                                        unit.value,
                                     onChanged: (value) {
                                       setState(() {
                                         if (value != null) {
-                                          _setting.tempUnit = unit.value;
-                                          _setUserSetting();
+                                          _setUserSetting(
+                                            UserSetting(
+                                              tempUnit: unit.value,
+                                              dateFormat: _userSettingModel
+                                                  .userSettings.dateFormat,
+                                            ),
+                                          );
                                         }
                                       });
                                       Navigator.of(context).pop();

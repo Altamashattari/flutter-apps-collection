@@ -18,16 +18,14 @@ const List<String> defaultRelations = [
   "Other",
 ];
 
+const dateMonthYear = "dd/MM/yyyy";
+const monthDateYear = "MM/dd/yyyy";
+const yearMonthDate = "yyyy/MM/dd";
+
 const dateFormats = [
-  {
-    "value": "MM/dd/yyyy",
-  },
-  {
-    "value": "dd/MM/yyyy",
-  },
-  {
-    "value": "yyyy/MM/dd",
-  },
+  {"value": monthDateYear},
+  {"value": dateMonthYear},
+  {"value": yearMonthDate},
 ];
 
 class TemperatureUnitDropdownItem {
@@ -50,3 +48,5 @@ var temperatureUnitDropdownItems = [
     value: TemperatureUnit.celsius,
   ),
 ];
+
+const userSettingskey = "user_settings";

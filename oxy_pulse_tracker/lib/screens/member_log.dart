@@ -15,7 +15,7 @@ class MemberLogPage extends StatefulWidget {
 
 class _MemberLogPageState extends State<MemberLogPage> {
   bool editMode = false;
-  bool _sortAscending = true;
+  bool _sortAscending = false;
   int _sortColumnIndex = 0;
 
   @override
@@ -33,48 +33,29 @@ class _MemberLogPageState extends State<MemberLogPage> {
     var stream = queryBuilder
         .watch(triggerImmediately: true)
         .map((query) => query.find());
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("Logs"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  editMode = !editMode;
-                });
-                String editModeText = editMode ? "enabled" : "disabled";
-                final snackBar = SnackBar(
-                  content: Text(
-                    'Edit Mode $editModeText',
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  backgroundColor: (Colors.deepPurple),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
-              icon: const Icon(Icons.edit),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.picture_as_pdf_sharp),
-            ),
-          ],
+          actions: _getAppbarActions(),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.note_add),
-          onPressed: () {
-            var generator = faker.randomGenerator.integer;
-            final log = MemberLog(
-              oxygenSaturation: generator(100, min: 80).toDouble(),
-              pulse: generator(100, min: 50).toDouble(),
-              temp: generator(100, min: 50).toDouble(),
-            );
-            log.member.target = member;
-            store.box<MemberLog>().put(log);
-          },
-        ),
+        floatingActionButton: !editMode
+            ? FloatingActionButton.extended(
+                icon: const Icon(Icons.add),
+                label: const Text("Add Observation"),
+                tooltip: "Add Member Observation",
+                onPressed: () {
+                  var generator = faker.randomGenerator.integer;
+                  final log = MemberLog(
+                    oxygenSaturation: generator(100, min: 80).toDouble(),
+                    pulse: generator(100, min: 50).toDouble(),
+                    temp: generator(100, min: 50).toDouble(),
+                  );
+                  log.member.target = member;
+                  store.box<MemberLog>().put(log);
+                },
+              )
+            : null,
         body: StreamBuilder(
           stream: stream,
           builder: (context, snapshot) {
@@ -83,31 +64,63 @@ class _MemberLogPageState extends State<MemberLogPage> {
                 child: CircularProgressIndicator(),
               );
             }
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: MemberLogDataTable(
-                    logs: snapshot.data!,
-                    userSetting: UserSetting(
-                      dateFormat: "dd/MM/yyyy",
-                      tempUnit: TemperatureUnit.fahrenheit,
-                    ),
-                    deleteRow: (id) => store.box<MemberLog>().remove(id),
-                    isEditMode: editMode,
-                    onSort: (columnIndex, ascending) {
-                      setState(() {
-                        _sortColumnIndex = columnIndex;
-                        _sortAscending = ascending;
-                      });
-                    },
-                  ),
-                ),
+            return MemberLogDataTable(
+              logs: snapshot.data!,
+              userSetting: UserSetting(
+                dateFormat: "dd/MM/yyyy",
+                tempUnit: TemperatureUnit.fahrenheit,
               ),
+              deleteRow: (id) {
+                store.box<MemberLog>().remove(id);
+              },
+              isEditMode: editMode,
+              onSort: (columnIndex, ascending) {
+                setState(() {
+                  _sortColumnIndex = columnIndex;
+                  _sortAscending = ascending;
+                });
+              },
+              onLogEdit: (log) {
+                store.box<MemberLog>().put(log);
+              },
             );
           },
         ));
+  }
+
+  List<Widget> _getAppbarActions() {
+    var defaultActions = [
+      IconButton(
+        icon: !editMode ? const Icon(Icons.edit) : const Icon(Icons.edit_off),
+        tooltip: "Switch to edit mode",
+        onPressed: () {
+          setState(() {
+            editMode = !editMode;
+          });
+          String editModeText = editMode ? "enabled" : "disabled";
+          final snackBar = SnackBar(
+            content: Text(
+              'Edit Mode $editModeText',
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            backgroundColor: (Colors.deepPurple),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+      ),
+    ];
+    if (!editMode) {
+      defaultActions.add(
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.picture_as_pdf_sharp),
+          tooltip: "Save as PDF",
+        ),
+      );
+    }
+    return defaultActions;
   }
 
   dynamic _getColumnToBeSorted(int columnIndex) {

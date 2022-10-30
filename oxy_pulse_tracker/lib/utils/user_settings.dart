@@ -11,3 +11,8 @@ class UserSetting {
         'tempUnit': tempUnit.name,
       };
 }
+
+UserSetting defaultUserSettings = UserSetting(
+  dateFormat: dateMonthYear,
+  tempUnit: TemperatureUnit.fahrenheit,
+);

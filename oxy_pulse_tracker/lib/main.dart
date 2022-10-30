@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_pulse_tracker/models/user_settings_model.dart';
+import 'package:oxy_pulse_tracker/utils/shared_pref.dart';
+import 'package:provider/provider.dart';
 
 import 'screens/members.dart';
 import 'screens//member_log.dart';
 import 'screens/settings.dart';
 import './routes.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PreferenceUtils.init();
+  runApp(
+    ChangeNotifierProvider<UserSettingModel>(
+      create: (context) => UserSettingModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

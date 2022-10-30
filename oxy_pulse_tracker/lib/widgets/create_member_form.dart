@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oxy_pulse_tracker/utils/validator.dart';
 
 import '../assets/constants.dart';
 import '../entities.dart';
@@ -61,12 +62,9 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                     member.name = newValue;
                   }
                 },
-                validator: (value) {
-                  if (value != null && value.trim().isNotEmpty) {
-                    return null;
-                  }
-                  return "Please enter name";
-                },
+                validator: (value) => InputValidator.isValidNumber(value)
+                    ? null
+                    : "Please enter name",
               ),
               const SizedBox(height: 10),
               TextFormField(
@@ -83,14 +81,9 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                     member.age = double.tryParse(newValue)?.round();
                   }
                 },
-                validator: (value) {
-                  var trimmedValue = value?.trim();
-                  var valueNotEmpty = trimmedValue?.isNotEmpty ?? false;
-                  if (valueNotEmpty && double.tryParse(trimmedValue!) != null) {
-                    return null;
-                  }
-                  return "Please enter valid age";
-                },
+                validator: (value) => InputValidator.isValidNumber(value)
+                    ? null
+                    : "Please enter valid age",
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField(
@@ -133,7 +126,7 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                       },
                       validator: (value) {
                         if (_isOtherRelation &&
-                            (value == null || value.isEmpty)) {
+                            InputValidator.isValueEmpty(value)) {
                           return "Please enter relation";
                         }
                         return null;
