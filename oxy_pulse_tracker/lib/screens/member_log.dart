@@ -1,9 +1,7 @@
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
-import 'package:oxy_pulse_tracker/assets/constants.dart';
 import 'package:oxy_pulse_tracker/entities.dart';
 import 'package:oxy_pulse_tracker/objectbox.g.dart';
-import 'package:oxy_pulse_tracker/utils/user_settings.dart';
+import 'package:oxy_pulse_tracker/widgets/create_member_log_form.dart';
 import 'package:oxy_pulse_tracker/widgets/log_data_table.dart';
 
 class MemberLogPage extends StatefulWidget {
@@ -45,14 +43,11 @@ class _MemberLogPageState extends State<MemberLogPage> {
                 label: const Text("Add Observation"),
                 tooltip: "Add Member Observation",
                 onPressed: () {
-                  var generator = faker.randomGenerator.integer;
-                  final log = MemberLog(
-                    oxygenSaturation: generator(100, min: 80).toDouble(),
-                    pulse: generator(100, min: 50).toDouble(),
-                    temp: generator(100, min: 50).toDouble(),
+                  _showAddNewMemberLogDialog(
+                    context,
+                    store,
+                    member,
                   );
-                  log.member.target = member;
-                  store.box<MemberLog>().put(log);
                 },
               )
             : null,
@@ -66,10 +61,6 @@ class _MemberLogPageState extends State<MemberLogPage> {
             }
             return MemberLogDataTable(
               logs: snapshot.data!,
-              userSetting: UserSetting(
-                dateFormat: "dd/MM/yyyy",
-                tempUnit: TemperatureUnit.fahrenheit,
-              ),
               deleteRow: (id) {
                 store.box<MemberLog>().remove(id);
               },
@@ -136,5 +127,40 @@ class _MemberLogPageState extends State<MemberLogPage> {
       default:
         return null;
     }
+  }
+
+  _showAddNewMemberLogDialog(
+    BuildContext context,
+    Store store,
+    Member member,
+  ) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              "Add Observation",
+              style: TextStyle(
+                color: Colors.deepPurple,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: CreateMemberLogForm(
+              onSubmit: (log) => _onCreateMemberLog(log, member, store),
+              onCancel: () => Navigator.of(context).pop(),
+            ),
+          );
+        });
+  }
+
+  _onCreateMemberLog(
+    MemberLog log,
+    Member member,
+    Store store,
+  ) {
+    Navigator.of(context).pop();
+    print(log.tempUnit);
+    log.member.target = member;
+    store.box<MemberLog>().put(log);
   }
 }

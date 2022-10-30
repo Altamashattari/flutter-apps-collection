@@ -3,6 +3,12 @@ enum TemperatureUnit {
   celsius,
 }
 
+extension ParseToString on TemperatureUnit {
+  String toShortString() {
+    return toString().split('.').last;
+  }
+}
+
 const String memberListBox = "member_list";
 
 const List<String> defaultRelations = [
@@ -30,7 +36,7 @@ const dateFormats = [
 
 class TemperatureUnitDropdownItem {
   final String text;
-  final TemperatureUnit value;
+  final String value;
 
   TemperatureUnitDropdownItem({
     required this.text,
@@ -41,11 +47,11 @@ class TemperatureUnitDropdownItem {
 var temperatureUnitDropdownItems = [
   TemperatureUnitDropdownItem(
     text: "Fahrenheit",
-    value: TemperatureUnit.fahrenheit,
+    value: TemperatureUnit.fahrenheit.toShortString(),
   ),
   TemperatureUnitDropdownItem(
     text: "Celsius",
-    value: TemperatureUnit.celsius,
+    value: TemperatureUnit.celsius.toShortString(),
   ),
 ];
 

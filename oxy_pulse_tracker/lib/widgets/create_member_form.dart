@@ -62,9 +62,9 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                     member.name = newValue;
                   }
                 },
-                validator: (value) => InputValidator.isValidNumber(value)
-                    ? null
-                    : "Please enter name",
+                validator: (value) => InputValidator.isValueEmpty(value)
+                    ? "Please enter name"
+                    : null,
               ),
               const SizedBox(height: 10),
               TextFormField(

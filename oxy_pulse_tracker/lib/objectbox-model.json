@@ -44,7 +44,7 @@
     },
     {
       "id": "2:1059131443099492783",
-      "lastPropertyId": "6:2539754647068309887",
+      "lastPropertyId": "7:6792497126004952847",
       "name": "MemberLog",
       "properties": [
         {
@@ -80,6 +80,11 @@
           "flags": 520,
           "indexId": "1:1764337311939265016",
           "relationTarget": "Member"
+        },
+        {
+          "id": "7:6792497126004952847",
+          "name": "tempUnit",
+          "type": 9
         }
       ],
       "relations": []

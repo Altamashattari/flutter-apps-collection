@@ -18,7 +18,7 @@ class UserSettingModel extends ChangeNotifier {
       var decodedValue = jsonDecode(userSettingsString);
       userSettings = UserSetting(
         dateFormat: decodedValue["dateFormat"],
-        tempUnit: TemperatureUnit.values.byName(decodedValue["tempUnit"]),
+        tempUnit: decodedValue["tempUnit"],
       );
       notifyListeners();
     }

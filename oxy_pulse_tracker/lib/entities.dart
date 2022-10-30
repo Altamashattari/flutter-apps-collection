@@ -1,25 +1,23 @@
 import 'package:objectbox/objectbox.dart';
 
-import 'assets/constants.dart';
-
 @Entity()
 class MemberLog {
   @Id()
   int id;
   late DateTime timestamp;
-  double? oxygenSaturation;
-  double? pulse;
+  double oxygenSaturation;
+  double pulse;
   double? temp;
-  TemperatureUnit? tempUnit;
+  String? tempUnit;
 
   final member = ToOne<Member>();
 
   MemberLog({
     this.id = 0,
-    this.oxygenSaturation,
-    this.pulse,
+    required this.oxygenSaturation,
+    required this.pulse,
     this.temp,
-    this.tempUnit = TemperatureUnit.fahrenheit,
+    this.tempUnit,
   }) {
     timestamp = DateTime.now();
   }

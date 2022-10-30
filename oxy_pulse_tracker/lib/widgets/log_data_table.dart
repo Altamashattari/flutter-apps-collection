@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:oxy_pulse_tracker/assets/constants.dart';
 import 'package:oxy_pulse_tracker/entities.dart';
+import 'package:oxy_pulse_tracker/models/user_settings_model.dart';
+import 'package:oxy_pulse_tracker/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/user_settings.dart';
 
 class MemberLogDataTable extends StatefulWidget {
   final List<MemberLog> logs;
-  final UserSetting userSetting;
   final Function(int id) deleteRow;
   final bool isEditMode;
   final void Function(int columnIndex, bool ascending) onSort;
@@ -15,7 +16,6 @@ class MemberLogDataTable extends StatefulWidget {
   const MemberLogDataTable({
     super.key,
     required this.logs,
-    required this.userSetting,
     required this.deleteRow,
     required this.isEditMode,
     required this.onSort,
@@ -29,8 +29,10 @@ class MemberLogDataTable extends StatefulWidget {
 class _MemberLogDataTableState extends State<MemberLogDataTable> {
   bool _sortAscending = true;
   int _sortColumnIndex = 0;
+  late UserSetting _userSetting;
   @override
   Widget build(BuildContext context) {
+    _userSetting = Provider.of<UserSettingModel>(context).userSettings;
     return widget.logs.isNotEmpty
         ? SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -113,15 +115,17 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
   }
 
   List<DataCell> _getDataCells(MemberLog log) {
-    String tempUnit = log.tempUnit == TemperatureUnit.fahrenheit ? "°F" : "°C";
+    String tempUnit = Utils.getTemperatureUnitString(log.tempUnit);
     List<DataCell> defaultDataCells = [
       DataCell(
         Text(
+          key: ValueKey("${log.id}-date"),
           _getDisplayDate(log.timestamp),
         ),
       ),
       DataCell(
         Text(
+          key: ValueKey("${log.id}-time"),
           _getDisplayTime(log.timestamp),
         ),
       ),
@@ -144,7 +148,6 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
                 // }),
                 onSaved: (newValue) {
                   var updatedValue = double.tryParse(newValue ?? "");
-                  print(updatedValue);
                   if (updatedValue != null) {
                     log.oxygenSaturation = updatedValue;
                     widget.onLogEdit(log);
@@ -152,6 +155,7 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
                 },
               )
             : Text(
+                key: ValueKey("${log.id}-oxygen"),
                 log.oxygenSaturation.toString(),
               ),
       ),
@@ -173,13 +177,14 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
                 }),
               )
             : Text(
+                key: ValueKey("${log.id}-pulse"),
                 log.pulse.toString(),
               ),
       ),
       DataCell(
         widget.isEditMode
             ? TextFormField(
-                key: ValueKey("${log.temp}-temp"),
+                key: ValueKey("${log.id}-temp"),
                 initialValue: log.temp.toString(),
                 keyboardType: TextInputType.number,
                 style: const TextStyle(
@@ -194,6 +199,7 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
                 }),
               )
             : Text(
+                key: ValueKey("${log.id}-temp"),
                 "${log.temp}$tempUnit",
               ),
       ),
@@ -201,7 +207,8 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
     if (widget.isEditMode) {
       defaultDataCells.add(
         DataCell(
-          const Icon(
+          Icon(
+            key: ValueKey("${log.id}-save"),
             Icons.save,
             color: Colors.deepPurple,
           ),
@@ -210,7 +217,11 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
       );
       defaultDataCells.add(
         DataCell(
-          const Icon(Icons.delete, color: Colors.red),
+          Icon(
+            Icons.delete,
+            color: Colors.red,
+            key: ValueKey("${log.id}-delete"),
+          ),
           onTap: () {
             widget.deleteRow(log.id);
           },
@@ -221,7 +232,7 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
   }
 
   String _getDisplayDate(DateTime date) {
-    return DateFormat(widget.userSetting.dateFormat).format(date);
+    return DateFormat(_userSetting.dateFormat).format(date);
   }
 
   String _getDisplayTime(DateTime date) {

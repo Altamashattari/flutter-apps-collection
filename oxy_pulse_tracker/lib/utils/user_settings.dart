@@ -2,17 +2,17 @@ import '../assets/constants.dart';
 
 class UserSetting {
   String dateFormat;
-  TemperatureUnit tempUnit;
+  String tempUnit;
 
   UserSetting({required this.dateFormat, required this.tempUnit});
 
   Map<String, dynamic> toJson() => {
         'dateFormat': dateFormat,
-        'tempUnit': tempUnit.name,
+        'tempUnit': tempUnit,
       };
 }
 
 UserSetting defaultUserSettings = UserSetting(
   dateFormat: dateMonthYear,
-  tempUnit: TemperatureUnit.fahrenheit,
+  tempUnit: TemperatureUnit.fahrenheit.toShortString(),
 );
