@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_pulse_tracker/utils/validator.dart';
 
-import '../assets/constants.dart';
+import '../constants.dart';
 import '../entities.dart';
 
 class CreateMemberForm extends StatefulWidget {

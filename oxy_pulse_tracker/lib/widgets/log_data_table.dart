@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:intl/intl.dart';
 import 'package:oxy_pulse_tracker/entities.dart';
 import 'package:oxy_pulse_tracker/models/user_settings_model.dart';
 import 'package:oxy_pulse_tracker/utils/utils.dart';
@@ -309,11 +308,11 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
   }
 
   String _getDisplayDate(DateTime date) {
-    return DateFormat(_userSetting.dateFormat).format(date);
+    return Utils.getDisplayDate(date, _userSetting.dateFormat);
   }
 
   String _getDisplayTime(DateTime date) {
-    return DateFormat("h:mm a").format(date);
+    return Utils.getDisplayTime(date);
   }
 
   void _onDataColumnSort(int columnIndex, bool ascending) {

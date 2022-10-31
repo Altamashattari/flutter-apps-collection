@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_pulse_tracker/entities.dart';
 import 'package:oxy_pulse_tracker/objectbox.g.dart';
+import 'package:oxy_pulse_tracker/screens/pdfexport/pdf_preview.dart';
 import 'package:oxy_pulse_tracker/widgets/create_member_log_form.dart';
 import 'package:oxy_pulse_tracker/widgets/log_data_table.dart';
 
@@ -33,51 +34,52 @@ class _MemberLogPageState extends State<MemberLogPage> {
         .map((query) => query.find());
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Logs"),
-          actions: _getAppbarActions(),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: const Icon(Icons.add),
-          label: const Text("Add Observation"),
-          tooltip: "Add Member Observation",
-          onPressed: () {
-            _showAddNewMemberLogDialog(
-              context,
-              store,
-              member,
+      appBar: AppBar(
+        title: const Text("Logs"),
+        actions: _getAppbarActions(member, store),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.add),
+        label: const Text("Add Observation"),
+        tooltip: "Add Member Observation",
+        onPressed: () {
+          _showAddNewMemberLogDialog(
+            context,
+            store,
+            member,
+          );
+        },
+      ),
+      body: StreamBuilder(
+        stream: stream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        ),
-        body: StreamBuilder(
-          stream: stream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return MemberLogDataTable(
-              logs: snapshot.data!,
-              deleteRow: (id) {
-                store.box<MemberLog>().remove(id);
-              },
-              isEditMode: editMode,
-              onSort: (columnIndex, ascending) {
-                setState(() {
-                  _sortColumnIndex = columnIndex;
-                  _sortAscending = ascending;
-                });
-              },
-              onLogEdit: (log) {
-                store.box<MemberLog>().put(log);
-              },
-            );
-          },
-        ));
+          }
+          return MemberLogDataTable(
+            logs: snapshot.data!,
+            deleteRow: (id) {
+              store.box<MemberLog>().remove(id);
+            },
+            isEditMode: editMode,
+            onSort: (columnIndex, ascending) {
+              setState(() {
+                _sortColumnIndex = columnIndex;
+                _sortAscending = ascending;
+              });
+            },
+            onLogEdit: (log) {
+              store.box<MemberLog>().put(log);
+            },
+          );
+        },
+      ),
+    );
   }
 
-  List<Widget> _getAppbarActions() {
+  List<Widget> _getAppbarActions(Member member, Store store) {
     var defaultActions = [
       IconButton(
         icon: !editMode ? const Icon(Icons.edit) : const Icon(Icons.edit_off),
@@ -103,7 +105,16 @@ class _MemberLogPageState extends State<MemberLogPage> {
     if (!editMode) {
       defaultActions.add(
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PdfPreviewPage(
+                  member: member,
+                  store: store,
+                ),
+              ),
+            );
+          },
           icon: const Icon(Icons.picture_as_pdf_sharp),
           tooltip: "Save as PDF",
         ),

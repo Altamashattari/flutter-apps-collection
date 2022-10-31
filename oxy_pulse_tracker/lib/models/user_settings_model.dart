@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:oxy_pulse_tracker/assets/constants.dart';
+import 'package:oxy_pulse_tracker/constants.dart';
 import 'package:oxy_pulse_tracker/utils/shared_pref.dart';
 import 'package:oxy_pulse_tracker/utils/user_settings.dart';
 

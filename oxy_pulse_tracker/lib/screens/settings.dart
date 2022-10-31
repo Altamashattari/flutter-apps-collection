@@ -3,7 +3,7 @@ import 'package:oxy_pulse_tracker/models/user_settings_model.dart';
 import 'package:provider/provider.dart';
 
 import 'package:settings_ui/settings_ui.dart';
-import '../assets/constants.dart';
+import '../constants.dart';
 import '../utils/user_settings.dart';
 
 class Settings extends StatefulWidget {

@@ -1,4 +1,4 @@
-import '../assets/constants.dart';
+import '../constants.dart';
 
 class UserSetting {
   String dateFormat;
