@@ -5,12 +5,15 @@ import '../assets/constants.dart';
 import '../entities.dart';
 
 class CreateMemberForm extends StatefulWidget {
-  final Function(String name, int age, String relation) onSubmit;
+  final Function(String name, int age, String relation, int? id) onSubmit;
   final Function() onCancel;
+  final Member? member;
+
   const CreateMemberForm({
     super.key,
     required this.onSubmit,
     required this.onCancel,
+    this.member,
   });
 
   @override
@@ -21,14 +24,33 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
   bool _isOtherRelation = false;
   final _ageFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
-  Member member = Member(
-    name: '',
-    age: null,
-    relation: 'Self',
-    avatar: '',
-    isAvatarImage: false,
-  );
+  late Member member;
   String customRelation = '';
+
+  @override
+  void initState() {
+    if (widget.member != null) {
+      if (!defaultRelations.contains(widget.member!.relation)) {
+        customRelation = widget.member!.relation;
+        _isOtherRelation = true;
+      } else {
+        _isOtherRelation = false;
+      }
+    }
+
+    member = Member(
+      name: widget.member?.name ?? '',
+      age: widget.member?.age,
+      relation: _isOtherRelation ? "Other" : widget.member?.relation ?? "Self",
+      avatar: widget.member?.avatar ?? '',
+      isAvatarImage: false,
+    );
+    if (widget.member?.id != null) {
+      member.id = widget.member!.id;
+    }
+
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -47,6 +69,7 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
+                initialValue: member.name,
                 autocorrect: false,
                 autofocus: true,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -68,6 +91,7 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                initialValue: member.age == null ? "" : member.age.toString(),
                 decoration: const InputDecoration(
                   labelText: "Age",
                 ),
@@ -114,6 +138,7 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
                   ? TextFormField(
                       autofocus: true,
                       autocorrect: false,
+                      initialValue: customRelation,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(
                         labelText: "Enter Relation",
@@ -172,6 +197,7 @@ class _CreateMemberFormState extends State<CreateMemberForm> {
         member.name,
         member.age!,
         customRelation.isNotEmpty ? customRelation : member.relation,
+        widget.member?.id,
       );
     }
   }

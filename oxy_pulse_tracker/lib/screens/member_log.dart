@@ -37,20 +37,18 @@ class _MemberLogPageState extends State<MemberLogPage> {
           title: const Text("Logs"),
           actions: _getAppbarActions(),
         ),
-        floatingActionButton: !editMode
-            ? FloatingActionButton.extended(
-                icon: const Icon(Icons.add),
-                label: const Text("Add Observation"),
-                tooltip: "Add Member Observation",
-                onPressed: () {
-                  _showAddNewMemberLogDialog(
-                    context,
-                    store,
-                    member,
-                  );
-                },
-              )
-            : null,
+        floatingActionButton: FloatingActionButton.extended(
+          icon: const Icon(Icons.add),
+          label: const Text("Add Observation"),
+          tooltip: "Add Member Observation",
+          onPressed: () {
+            _showAddNewMemberLogDialog(
+              context,
+              store,
+              member,
+            );
+          },
+        ),
         body: StreamBuilder(
           stream: stream,
           builder: (context, snapshot) {

@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:oxy_pulse_tracker/routes.dart';
+import 'package:oxy_pulse_tracker/widgets/create_member_form.dart';
 
 import '../entities.dart';
 import '../objectbox.g.dart';
 
 class MemberCard extends StatelessWidget {
   final Member member;
-  final Function(int memberId) onMemberEdit;
+  final Function(String name, int age, String relation, int? id) onMemberEdit;
   final Function(int memberId) onMemberDelete;
+  final Function(Member member) onEditMember;
   final Store store;
 
   const MemberCard({
     super.key,
     required this.member,
+    required this.onEditMember,
     required this.onMemberEdit,
     required this.onMemberDelete,
     required this.store,
@@ -44,7 +47,36 @@ class MemberCard extends StatelessWidget {
                   Text("Edit"),
                 ],
               ),
-              onTap: () => onMemberEdit(member.id),
+              onTap: () {
+                // onEditMember(member);
+                Future.delayed(
+                  const Duration(seconds: 0),
+                  () {
+                    // onEditMember(member)
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text(
+                              "Edit Member",
+                              style: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            content: CreateMemberForm(
+                              onSubmit: (name, age, relation, id) {
+                                Navigator.of(context).pop();
+                                onMemberEdit(name, age, relation, id);
+                              },
+                              onCancel: () => Navigator.of(context).pop(),
+                              member: member,
+                            ),
+                          );
+                        });
+                  },
+                );
+              },
             ),
             PopupMenuItem(
               child: Row(

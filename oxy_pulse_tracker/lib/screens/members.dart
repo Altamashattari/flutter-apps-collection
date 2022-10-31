@@ -58,11 +58,12 @@ class _MembersPageState extends State<MembersPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text("Add Member"),
+        icon: const Icon(Icons.add),
         onPressed: () {
           // _addNewMember();
-          _showAddNewMemberDialog(context);
+          _showAddNewMemberDialog(context: context);
         },
       ),
       body: isStoreInitialized
@@ -77,7 +78,11 @@ class _MembersPageState extends State<MembersPage> {
                 return MemberList(
                   members: snapshot.data!,
                   onMemberDelete: _removeMember,
-                  onMemberEdit: _onEditMember,
+                  onMemberEdit: _onMemberSave,
+                  onEditMember: ((member) => _onEditMember(
+                        context: context,
+                        member: member,
+                      )),
                   store: _store,
                 );
               },
@@ -88,7 +93,31 @@ class _MembersPageState extends State<MembersPage> {
     );
   }
 
-  _showAddNewMemberDialog(BuildContext context) {
+  _onEditMember({required BuildContext context, required Member member}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              "Edit Member",
+              style: TextStyle(
+                color: Colors.deepPurple,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: CreateMemberForm(
+              onSubmit: (name, age, relation, id) {
+                _hideDialog(context);
+                _onMemberSave(name, age, relation, id);
+              },
+              onCancel: () => _hideDialog(context),
+              member: member,
+            ),
+          );
+        });
+  }
+
+  _showAddNewMemberDialog({required BuildContext context}) {
     showDialog(
         context: context,
         builder: (context) {
@@ -101,32 +130,12 @@ class _MembersPageState extends State<MembersPage> {
               ),
             ),
             content: CreateMemberForm(
-              onSubmit: ((name, age, relation) {
+              onSubmit: (name, age, relation, id) {
                 _hideDialog(context);
-                _onMemberSave(name, age, relation);
-              }),
+                _onMemberSave(name, age, relation, id);
+              },
               onCancel: () => _hideDialog(context),
             ),
-            // actions: [
-            //   TextButton(
-            //     onPressed: () => Navigator.of(context).pop(),
-            //     child: const Text(
-            //       "CANCEL",
-            //       style: TextStyle(
-            //         color: Colors.deepPurple,
-            //       ),
-            //     ),
-            //   ),
-            //   TextButton(
-            //     onPressed: () => Navigator.of(context).pop(),
-            //     child: const Text(
-            //       "SAVE",
-            //       style: TextStyle(
-            //         color: Colors.deepPurple,
-            //       ),
-            //     ),
-            //   ),
-            // ],
           );
         });
   }
@@ -139,13 +148,11 @@ class _MembersPageState extends State<MembersPage> {
     _store.box<Member>().remove(id);
   }
 
-  _onEditMember(int id) {}
-
   String _getMemberInitials(String name) {
     return name.trim().split(' ').map((e) => e[0]).take(2).join();
   }
 
-  _onMemberSave(String name, int age, String relation) {
+  _onMemberSave(String name, int age, String relation, int? id) {
     final member = Member(
       name: name,
       relation: relation,
@@ -153,6 +160,9 @@ class _MembersPageState extends State<MembersPage> {
       avatar: _getMemberInitials(name),
       isAvatarImage: false,
     );
+    if (id != null) {
+      member.id = id;
+    }
     _store.box<Member>().put(member);
   }
 }

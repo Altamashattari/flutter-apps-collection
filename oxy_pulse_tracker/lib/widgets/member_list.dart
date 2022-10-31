@@ -6,8 +6,9 @@ import '../entities.dart';
 
 class MemberList extends StatelessWidget {
   final List<Member> members;
-  final Function(int memberId) onMemberEdit;
+  final Function(String name, int age, String relation, int? id) onMemberEdit;
   final Function(int memberId) onMemberDelete;
+  final Function(Member member) onEditMember;
   final Store store;
 
   const MemberList({
@@ -16,6 +17,7 @@ class MemberList extends StatelessWidget {
     required this.onMemberEdit,
     required this.onMemberDelete,
     required this.store,
+    required this.onEditMember,
   });
 
   @override
@@ -48,6 +50,7 @@ class MemberList extends StatelessWidget {
                     member: members[index],
                     onMemberDelete: onMemberDelete,
                     onMemberEdit: onMemberEdit,
+                    onEditMember: onEditMember,
                     store: store,
                   ),
                   separatorBuilder: (context, index) {
