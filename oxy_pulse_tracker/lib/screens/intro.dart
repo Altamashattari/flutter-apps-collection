@@ -34,7 +34,8 @@ class IntroductionScreens extends StatelessWidget {
             ),
             PageViewModel(
               title: 'Manage your Observations',
-              body: 'Manage your data by editing, sorting and deleting',
+              body:
+                  'Manage your data by editing, sorting and deleting and customize your settings',
               image: buildImage("assets/settings.png"),
               //getPageDecoration, a method to customise the page style
               decoration: getPageDecoration(),
