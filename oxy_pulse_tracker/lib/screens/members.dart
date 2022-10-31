@@ -37,8 +37,6 @@ class _MembersPageState extends State<MembersPage> {
             .map((query) => query.find());
         isStoreInitialized = true;
       });
-    }).catchError((err) {
-      print(err);
     });
   }
 

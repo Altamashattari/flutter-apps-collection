@@ -159,7 +159,6 @@ class _MemberLogPageState extends State<MemberLogPage> {
     Store store,
   ) {
     Navigator.of(context).pop();
-    print(log.tempUnit);
     log.member.target = member;
     store.box<MemberLog>().put(log);
   }

@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 import 'package:oxy_pulse_tracker/entities.dart';
 import 'package:oxy_pulse_tracker/models/user_settings_model.dart';
 import 'package:oxy_pulse_tracker/utils/utils.dart';
+import 'package:oxy_pulse_tracker/utils/validator.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../utils/user_settings.dart';
+
+class LogEditableFields {
+  final String oxygenSaturation;
+  final String pulse;
+  final String? temp;
+
+  LogEditableFields({
+    required this.oxygenSaturation,
+    required this.pulse,
+    this.temp,
+  });
+}
 
 class MemberLogDataTable extends StatefulWidget {
   final List<MemberLog> logs;
@@ -30,6 +46,7 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
   bool _sortAscending = true;
   int _sortColumnIndex = 0;
   late UserSetting _userSetting;
+  final Map<int, LogEditableFields> logMap = {};
   @override
   Widget build(BuildContext context) {
     _userSetting = Provider.of<UserSettingModel>(context).userSettings;
@@ -116,6 +133,11 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
 
   List<DataCell> _getDataCells(MemberLog log) {
     String tempUnit = Utils.getTemperatureUnitString(log.tempUnit);
+    logMap[log.id] = LogEditableFields(
+      oxygenSaturation: log.oxygenSaturation.toString(),
+      pulse: log.pulse.toString(),
+      temp: log.temp?.toString(),
+    );
     List<DataCell> defaultDataCells = [
       DataCell(
         Text(
@@ -135,23 +157,23 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
                 key: ValueKey("${log.id}-oxygen"),
                 initialValue: log.oxygenSaturation.toString(),
                 keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 style: const TextStyle(
                   fontSize: 14,
                 ),
-                // onChanged: ((value) {
-                //   var updatedValue = double.tryParse(value);
-                //   print(updatedValue);
-                //   if (updatedValue != null) {
-                //     log.oxygenSaturation = updatedValue;
-                //     widget.onLogEdit(log);
-                //   }
-                // }),
-                onSaved: (newValue) {
-                  var updatedValue = double.tryParse(newValue ?? "");
-                  if (updatedValue != null) {
-                    log.oxygenSaturation = updatedValue;
-                    widget.onLogEdit(log);
+                onChanged: (newValue) {
+                  final previousValue = logMap[log.id];
+                  logMap[log.id] = LogEditableFields(
+                    oxygenSaturation: newValue,
+                    pulse: previousValue!.pulse,
+                    temp: previousValue.temp,
+                  );
+                },
+                validator: (value) {
+                  if (InputValidator.isValidNumber(value)) {
+                    return null;
                   }
+                  return "";
                 },
               )
             : Text(
@@ -165,16 +187,24 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
                 key: ValueKey("${log.id}-pulse"),
                 initialValue: log.pulse.toString(),
                 keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 style: const TextStyle(
                   fontSize: 14,
                 ),
                 onChanged: ((value) {
-                  var updatedValue = double.tryParse(value);
-                  if (updatedValue != null) {
-                    log.pulse = updatedValue;
-                    widget.onLogEdit(log);
-                  }
+                  final previousValue = logMap[log.id];
+                  logMap[log.id] = LogEditableFields(
+                    oxygenSaturation: previousValue!.oxygenSaturation,
+                    pulse: value,
+                    temp: previousValue.temp,
+                  );
                 }),
+                validator: (value) {
+                  if (InputValidator.isValidNumber(value)) {
+                    return null;
+                  }
+                  return "";
+                },
               )
             : Text(
                 key: ValueKey("${log.id}-pulse"),
@@ -185,22 +215,30 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
         widget.isEditMode
             ? TextFormField(
                 key: ValueKey("${log.id}-temp"),
-                initialValue: log.temp.toString(),
+                initialValue: log.temp?.toString() ?? "",
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(
                   fontSize: 14,
                 ),
                 onChanged: ((value) {
-                  var updatedValue = double.tryParse(value);
-                  if (updatedValue != null) {
-                    log.temp = updatedValue;
-                    widget.onLogEdit(log);
-                  }
+                  final previousValue = logMap[log.id];
+                  logMap[log.id] = LogEditableFields(
+                    oxygenSaturation: previousValue!.oxygenSaturation,
+                    pulse: previousValue.pulse,
+                    temp: value,
+                  );
                 }),
+                validator: (value) {
+                  if (value == null || InputValidator.isValidNumber(value)) {
+                    return null;
+                  }
+                  return "";
+                },
               )
             : Text(
                 key: ValueKey("${log.id}-temp"),
-                "${log.temp}$tempUnit",
+                log.temp != null ? "${log.temp}$tempUnit" : "-",
               ),
       ),
     ];
@@ -212,7 +250,39 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
             Icons.save,
             color: Colors.deepPurple,
           ),
-          onTap: () {},
+          onTap: () {
+            var editedFields = logMap[log.id];
+            if (editedFields == null) {
+              return;
+            }
+            var isOxygenSaturationValid =
+                InputValidator.isValidNumber(editedFields.oxygenSaturation);
+            var isPulseValid = InputValidator.isValidNumber(editedFields.pulse);
+            var isTempValid = editedFields.temp == null ||
+                editedFields.temp!.isEmpty ||
+                InputValidator.isValidNumber(editedFields.temp);
+            if (isOxygenSaturationValid && isPulseValid && isTempValid) {
+              log.oxygenSaturation =
+                  double.parse(editedFields.oxygenSaturation);
+              log.pulse = double.parse(editedFields.pulse);
+              log.temp = double.tryParse(editedFields.temp ?? "");
+              widget.onLogEdit(log);
+              showTopSnackBar(
+                context,
+                const CustomSnackBar.success(
+                  message: "Successfully edited the log",
+                  backgroundColor: Colors.deepPurple,
+                ),
+              );
+            } else {
+              showTopSnackBar(
+                context,
+                const CustomSnackBar.error(
+                  message: "Please enter valid log value",
+                ),
+              );
+            }
+          },
         ),
       );
       defaultDataCells.add(
@@ -224,6 +294,13 @@ class _MemberLogDataTableState extends State<MemberLogDataTable> {
           ),
           onTap: () {
             widget.deleteRow(log.id);
+            showTopSnackBar(
+              context,
+              const CustomSnackBar.success(
+                message: "Successfully deleted the log",
+                backgroundColor: Color.fromARGB(255, 172, 95, 102),
+              ),
+            );
           },
         ),
       );

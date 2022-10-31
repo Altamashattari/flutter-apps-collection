@@ -91,9 +91,14 @@ class _CreateMemberLogFormState extends State<CreateMemberLogForm> {
                     log.temp = double.parse(newValue!);
                   }
                 },
-                validator: (value) => InputValidator.isValidNumber(value)
-                    ? null
-                    : "Please enter valid temperature",
+                validator: (value) {
+                  if (value == null || value == "") {
+                    return null;
+                  }
+                  return InputValidator.isValidNumber(value)
+                      ? null
+                      : "Please enter valid temperature";
+                },
               ),
               const SizedBox(height: 10),
               Row(
