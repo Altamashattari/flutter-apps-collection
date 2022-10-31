@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:oxy_pulse_tracker/constants.dart';
+import 'package:oxy_pulse_tracker/utils/shared_pref.dart';
 
 class Utils {
   static String getTemperatureUnitString(String? tempUnit) {
@@ -25,5 +26,15 @@ class Utils {
       chunks.add(array.sublist(i, end));
     }
     return chunks;
+  }
+
+  static Future<bool> isUsingAppForFirstTime() async {
+    bool? isUsingForFirstTime =
+        PreferenceUtils.getBool("isUsingAppForFirstTime");
+    if (isUsingForFirstTime == null) {
+      await PreferenceUtils.setBool("isUsingAppForFirstTime", true);
+      return true;
+    }
+    return false;
   }
 }

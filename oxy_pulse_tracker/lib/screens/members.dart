@@ -51,6 +51,7 @@ class _MembersPageState extends State<MembersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Oxy Pulse Tracker"),
         actions: [
           IconButton(
