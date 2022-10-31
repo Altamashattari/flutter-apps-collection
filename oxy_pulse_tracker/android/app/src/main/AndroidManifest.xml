@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.oxy_pulse_tracker">
    <application
-        android:label="oxy_pulse_tracker"
+        android:label="Oxy Pulse Tracker"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
