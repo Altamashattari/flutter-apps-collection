@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.oxy_pulse_tracker">
+    package="com.altamashali.app.oxypulsetracker">
    <application
         android:label="Oxy Pulse Tracker"
         android:name="${applicationName}"
