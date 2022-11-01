@@ -44,7 +44,13 @@ class _SettingsState extends State<Settings> {
     return SettingsList(
       sections: [
         SettingsSection(
-          title: const Text('Log Setting'),
+          title: const Text(
+            'Log Settings',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           tiles: <SettingsTile>[
             SettingsTile.navigation(
               leading: const Icon(Icons.date_range_outlined),
