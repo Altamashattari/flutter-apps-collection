@@ -1,4 +1,4 @@
-package com.example.oxy_pulse_tracker
+package com.altamashali.app.oxypulsetracker
 
 import io.flutter.embedding.android.FlutterActivity
 

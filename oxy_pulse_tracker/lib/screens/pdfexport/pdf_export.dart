@@ -192,7 +192,9 @@ Future<Uint8List> makePdf(
                         ),
                         Expanded(
                           child: PaddedText(
-                            log.temp?.toString() ?? "-",
+                            log.temp == null
+                                ? "-"
+                                : "${log.temp.toString()}${Utils.getTemperatureUnitString(log.tempUnit)}",
                           ),
                           flex: 4,
                         ),
